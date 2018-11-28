@@ -7,6 +7,10 @@ const stripe = require('stripe')("sk_test_yzle9vRHc8IgcQBhonZB68re");
 const stripepay = require('stripe')("pk_test_vYQRJHg0qpwGLwXLZ6jRuzIt")
 const request = require('request');
 const secretkey = "sk_test_yzle9vRHc8IgcQBhonZB68re"
+
+
+
+// add user
 let adduser=(name,cb)=>{
 let username =name.name;
 let role = "USER";
@@ -35,6 +39,10 @@ connection.query(sql,parms,(err,result)=>{
 
 })
 }
+
+
+// view admin data
+
 let admin = (data ,cb)=>{
   console.log(data);
   let sql ="SELECT * FROM admin WHERE name=? AND password=?"
@@ -70,7 +78,7 @@ let admin = (data ,cb)=>{
 
 
 }
-
+//view shop data
 const shop=(cb)=>{
   let sql ="SELECT * FROM shop"
   connection.query(sql,[],(err,data)=>{
@@ -87,6 +95,8 @@ const shop=(cb)=>{
   })
 
 }
+
+// /add card for user
 const addcard =(data,cb)=>{
 console.log(data);
   const card = {
@@ -162,7 +172,7 @@ console.log(data);
 
 }
 
-
+//wallet top up for user
 const wallettopup =(data,cb)=>{
     console.log(data);
     let userid = data.userid,amount= data.amount,stripecard_id=data.stripecard_id;
@@ -233,7 +243,7 @@ const wallettopup =(data,cb)=>{
 
 
 }
-
+// add bank for shop
 const addbank = (data,cb)=>{
   let stripe_account_code = data.stripe_account_code
   let shop_id = data.shop_id
@@ -288,6 +298,8 @@ const addbank = (data,cb)=>{
         }
     });
 }
+
+// validate user
 const checkuser = (data,cb)=>{
   let user_id = data.userid ,password = data.password ;
   let sql ="SELECT * FROM user WHERE user_id =? AND password = ? "
@@ -315,7 +327,7 @@ const checkuser = (data,cb)=>{
     }
   })
 }
-// wallet pay
+// create booking and wallet pay
 const createbooking = (data,cb)=>{
   let userid = data.userid,quantity = data.quantity, promo = data.promo ? data.promo : "",total_price = data.total_price;
   let is_promo=promo ? 1 : 0
@@ -466,7 +478,7 @@ const createbooking = (data,cb)=>{
 
 
 }
-// card booking
+// create booking by card booking
 const createbooking2 = (data,cb)=>{
   let userid = data.userid,quantity = data.quantity, promo = data.promo ? data.promo : "",card = data.card ? data.card:"",total_price = data.total_price;
   let is_promo=promo ? 1 : 0
@@ -629,6 +641,27 @@ const checkstock =(data,cb)=>{
     }
   })
 }
+//show card of user
+const showcard = (user,cb)=>{
+  let sql =" SELECT * FROM customer_card WHERE user_id =?"
+  let params =[user]
+  connection.query(sql,params,(err,result)=>{
+    if(err)
+    {
+      cb(err)
+    }
+    else{
+      response={
+        status:200,
+        message:"success",
+        data:{
+          cards : result
+        }
+      }
+      cb(response)
+    }
+  })
+}
   //
   module.exports = {
     adduser :adduser,
@@ -640,5 +673,6 @@ const checkstock =(data,cb)=>{
     createbooking:createbooking,
     checkuser:checkuser,
     checkstock:checkstock,
-    createbooking2:createbooking2
+    createbooking2:createbooking2,
+    showcard:showcard
 }

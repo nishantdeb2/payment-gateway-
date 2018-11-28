@@ -158,6 +158,19 @@ const addbank=(req,res)=>{
 
 }
 
+const showcard = (req,res)=>{
+  console.log("show card of userId");
+  let userid = req.body.userid;
+  memServices.showcard(userid,(err,result)=>{
+    if(err){
+      res.send(err)
+    }
+    else {
+      res.send(result);
+    }
+  });
+}
+
 module.exports = {
 
   adduser:adduser,
@@ -166,5 +179,6 @@ module.exports = {
   addcard:addcard,
   wallettopup:wallettopup,
   addbank:addbank,
-  createbooking:createbooking
+  createbooking:createbooking,
+  showcard:showcard
 }
